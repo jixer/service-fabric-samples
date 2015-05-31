@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "HelloWebApiApplication", "HelloWebApiApplication\HelloWebApiApplication.sfproj", "{643F560F-4941-49BB-B68B-484D56ACE0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWebApi", "HelloWebApi\HelloWebApi.csproj", "{AAE23B74-E037-4546-BA62-35CF7F328B38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Debug|x64.ActiveCfg = Debug|x64
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Debug|x64.Build.0 = Debug|x64
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Debug|x64.Deploy.0 = Debug|x64
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Release|x64.ActiveCfg = Release|x64
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Release|x64.Build.0 = Release|x64
+		{643F560F-4941-49BB-B68B-484D56ACE0BF}.Release|x64.Deploy.0 = Release|x64
+		{AAE23B74-E037-4546-BA62-35CF7F328B38}.Debug|x64.ActiveCfg = Debug|x64
+		{AAE23B74-E037-4546-BA62-35CF7F328B38}.Debug|x64.Build.0 = Debug|x64
+		{AAE23B74-E037-4546-BA62-35CF7F328B38}.Release|x64.ActiveCfg = Release|x64
+		{AAE23B74-E037-4546-BA62-35CF7F328B38}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
