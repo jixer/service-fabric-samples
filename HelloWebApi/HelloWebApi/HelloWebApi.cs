@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric;
 using Microsoft.ServiceFabric.Services;
+using System.Fabric.Description;
+using Microsoft.Owin.Hosting;
+using Owin;
+using System.Web.Http;
+using HelloWebApi.App_Start;
+using System.Diagnostics;
 
 namespace HelloWebApi
 {
@@ -12,19 +19,67 @@ namespace HelloWebApi
     {
         protected override ICommunicationListener CreateCommunicationListener()
         {
-            // TODO: Replace this with an ICommunicationListener implementation if your service needs to handle user requests.
-            return base.CreateCommunicationListener();
+            return new OwinCommunicationListener();
+        }
+    }
+
+    public class OwinCommunicationListener : ICommunicationListener
+    {
+        private string listeningAddress;
+        private string publishAddress;
+        private IDisposable serverHandle;
+
+        public void Abort()
+        {
+            ServiceEventSource.Current.Message("Abort");
+            StopWebServer();
         }
 
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        public Task CloseAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following with your own logic.
+            ServiceEventSource.Current.Message("Close");
+            StopWebServer();
+            return Task.FromResult(true);
+        }
 
-            int iterations = 0;
-            while (!cancellationToken.IsCancellationRequested)
+        public void Initialize(ServiceInitializationParameters serviceInitializationParameters)
+        {
+            ServiceEventSource.Current.Message("Initialize");
+
+            EndpointResourceDescription serviceEndpoint =
+                serviceInitializationParameters.CodePackageActivationContext.GetEndpoint("ServiceEndpoint");
+            int port = serviceEndpoint.Port;
+
+            listeningAddress = string.Format("http://+:{0}/", port);
+            publishAddress = listeningAddress.Replace("+", FabricRuntime.GetNodeContext().IPAddressOrFQDN);
+        }
+
+        public Task<string> OpenAsync(CancellationToken cancellationToken)
+        {
+            ServiceEventSource.Current.Message("Starting web server on {0}", listeningAddress);
+
+            serverHandle = WebApp.Start(listeningAddress, StartupConfiguration);
+
+            return Task.FromResult(publishAddress);         
+        }
+
+        private void StartupConfiguration(IAppBuilder appBuilder)
+        {
+            System.Net.ServicePointManager.DefaultConnectionLimit = 256;
+
+            HttpConfiguration config = new HttpConfiguration();
+
+            FormatterConfig.ConfigureFormatters(config.Formatters);
+            RouteConfig.RegisterRoutes(config.Routes);
+
+            appBuilder.UseWebApi(config);
+        }
+
+        private void StopWebServer()
+        {
+            if (serverHandle != null)
             {
-                ServiceEventSource.Current.ServiceMessage(this, "Working-{0}", iterations++);
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                serverHandle.Dispose();
             }
         }
     }
